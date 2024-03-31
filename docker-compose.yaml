@@ -1,0 +1,29 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+services:
+  gofinance:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+
+  db:
+    image: postgres:14-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: gofinance
+      POSTGRES_PASSWORD: gofinance
+    volumes:
+      - ./docker/postgres/create-extensions.sql:/docker-entrypoint-initdb.d/create-extensions.sql
+
