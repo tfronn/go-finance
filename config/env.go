@@ -16,8 +16,11 @@ var (
 	// TOKENEXP returns the jwt token expiration duration.
 	// Should be time.ParseDuration string. Source: https://golang.org/pkg/time/#ParseDuration
 	// default: 10h
-	TOKENEXP        = getEnv("TOKEN_EXP", "10h")
-	APP_ENVIRONMENT = getEnv("APP_ENVIRONMENT", "development")
+	TOKENEXP             = getEnv("TOKEN_EXP", "10h")
+	APP_ENVIRONMENT      = getEnv("APP_ENVIRONMENT", "development")
+	GOOGLE_CLIENT_ID     = getEnv("GOOGLE_CLIENT_ID", "")
+	GOOGLE_CLIENT_SECRET = getEnv("GOOGLE_CLIENT_SECRET", "")
+	GOOGLE_REDIRECT_URL  = getEnv("GOOGLE_REDIRECT_URL", "http://localhost:4000/api/v1/auth/google/callback")
 )
 
 func getEnv(name string, fallback string) string {

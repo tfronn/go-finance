@@ -16,9 +16,9 @@ import (
 func main() {
 	database.Connect()
 	database.Migrate(
+		&models.User{},
 		&models.Income{},
 		&models.Expense{},
-		&models.User{},
 	)
 
 	app := fiber.New(fiber.Config{
@@ -35,8 +35,6 @@ func main() {
 		c.Set("Z--APIVersion", "v1")
 		return c.Next()
 	})
-
-	// fmt.Println(api)
 
 	routes.IncomesRoutes(v1, services.InitIncomeServices())
 	routes.ExpensesRoutes(v1, services.InitExpenseServices())

@@ -26,7 +26,7 @@ func (ur *userRepository) Create(user *models.User) (*models.User, error) {
 
 func (ur *userRepository) FindByID(id uuid.UUID) (*models.User, error) {
 	var user models.User
-	err := ur.db.First(&user, "id = ?", id).Error
+	err := ur.db.Preload("Incomes").Preload("Expenses").First(&user, "id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +35,7 @@ func (ur *userRepository) FindByID(id uuid.UUID) (*models.User, error) {
 
 func (ur *userRepository) FindByGoogleID(googleID string) (*models.User, error) {
 	var user models.User
-	err := ur.db.First(&user, "google_id = ?", googleID).Error
+	err := ur.db.Preload("Incomes").Preload("Expenses").First(&user, "google_id = ?", googleID).Error
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (ur *userRepository) FindByGoogleID(googleID string) (*models.User, error) 
 
 func (ur *userRepository) FindAll() ([]*models.User, error) {
 	var users []*models.User
-	err := ur.db.Find(&users).Error
+	err := ur.db.Preload("Incomes").Preload("Expenses").Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (ur *userRepository) FindAll() ([]*models.User, error) {
 
 func (ur *userRepository) FindByEmail(email string) (*models.User, error) {
 	var user models.User
-	err := ur.db.Where("email = ?", email).First(&user).Error
+	err := ur.db.Preload("Incomes").Preload("Expenses").Where("email = ?", email).First(&user).Error
 	if err != nil {
 		return nil, err
 	}

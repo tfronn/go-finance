@@ -23,7 +23,7 @@ type Claims struct {
 }
 
 func GenerateToken(userDTO *types.UserDTO) (string, error) {
-	expirationTime := time.Now().Add(5 * time.Minute)
+	expirationTime := time.Now().Add(24 * time.Hour)
 
 	claims := &Claims{
 		ID:        userDTO.ID,

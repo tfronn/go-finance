@@ -7,6 +7,8 @@ import (
 	"gofinance/api/pkg/types"
 	"gofinance/utils"
 	"net/http"
+	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -15,10 +17,21 @@ import (
 func CreateIncome(incomeService interfaces.IncomeServices) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		b := new(types.IncomeDTO)
+		authHeader := ctx.Get("Authorization")
+		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+
+		tokenInfo, err := utils.ParseToken(tokenString)
+		if err != nil {
+			return fiber.NewError(fiber.ErrBadRequest.Code, fmt.Sprintf("failed to parse token: %v", err))
+		}
 
 		if err := utils.ParseBodyAndValidate(ctx, b); err != nil {
 			return fiber.NewError(fiber.ErrBadRequest.Code, fmt.Sprintf("error parsing body: %v", err))
 		}
+
+		b.UserID = tokenInfo.ID
+		b.ID = uuid.New()
+		b.CreatedAt = time.Now()
 
 		result, err := incomeService.Create(b)
 		if err != nil {
@@ -26,34 +39,6 @@ func CreateIncome(incomeService interfaces.IncomeServices) fiber.Handler {
 			return ctx.JSON(err)
 		}
 		return ctx.JSON(result)
-	}
-}
-
-func GetAllIncomes(incomesService interfaces.IncomeServices) fiber.Handler {
-	return func(ctx *fiber.Ctx) error {
-		incomes, err := incomesService.FindAll()
-		if err != nil {
-			ctx.Status(http.StatusInternalServerError)
-			return ctx.JSON(err)
-		}
-		return ctx.JSON(incomes)
-	}
-}
-
-func GetIncomeByID(incomesService interfaces.IncomeServices) fiber.Handler {
-	return func(ctx *fiber.Ctx) error {
-		id, err := uuid.Parse(ctx.Params("id"))
-		if err != nil {
-			ctx.Status(http.StatusBadRequest)
-			return ctx.JSON(errors.New("invalid income ID"))
-		}
-
-		income, err := incomesService.FindByID(id)
-		if err != nil {
-			ctx.Status(http.StatusInternalServerError)
-			return ctx.JSON(err)
-		}
-		return ctx.JSON(income)
 	}
 }
 
@@ -65,7 +50,7 @@ func UpdateIncome(incomesService interfaces.IncomeServices) fiber.Handler {
 			return ctx.JSON(errors.New("invalid income ID"))
 		}
 
-		b := new(types.IncomeDTO)
+		b := &types.IncomeDTO{}
 		if err := utils.ParseBodyAndValidate(ctx, b); err != nil {
 			return fiber.NewError(fiber.ErrBadRequest.Code, fmt.Sprintf("error parsing body: %v", err))
 		}
@@ -73,29 +58,25 @@ func UpdateIncome(incomesService interfaces.IncomeServices) fiber.Handler {
 		updatedIncome, err := incomesService.Update(b, id)
 		if err != nil {
 			ctx.Status(http.StatusInternalServerError)
-			return ctx.JSON(err)
+			return ctx.JSON(err.Error())
 		}
 		return ctx.JSON(updatedIncome)
 	}
 }
 
-// func IncomesDelete(incomesService interfaces.IncomeServices) fiber.Handler {
-// 	return func(ctx *fiber.Ctx) error {
-// 			id, err := uuid.Parse(ctx.Params("id"))
-// 			if err != nil {
-// 					ctx.Status(http.StatusBadRequest)
-// 					return ctx.JSON(errors.New("invalid income ID"))
-// 			}
+func IncomesDelete(incomesService interfaces.IncomeServices) fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		id, err := uuid.Parse(ctx.Params("id"))
+		if err != nil {
+			ctx.Status(http.StatusBadRequest)
+			return ctx.JSON(errors.New("invalid income ID"))
+		}
 
-// 			err = incomesService.Delete(id)
-// 			if err != nil {
-// 					if err == interfaces.ErrIncomeNotFound {
-// 							ctx.Status(http.StatusNotFound)
-// 							return ctx.JSON(err)
-// 					}
-// 					ctx.Status(http.StatusInternalServerError)
-// 					return ctx.JSON(err)
-// 			}
-// 			return ctx.SendStatus(http.StatusNoContent)
-// 	}
-// }
+		err = incomesService.Delete(id)
+		if err != nil {
+			ctx.Status(http.StatusInternalServerError)
+			return ctx.JSON(err)
+		}
+		return ctx.SendStatus(http.StatusNoContent)
+	}
+}

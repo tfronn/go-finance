@@ -11,9 +11,7 @@ import (
 func ExpensesRoutes(app fiber.Router, expenseService interfaces.ExpenseServices) {
 	r := app.Group("/expenses", handlers.TokenVerificationMiddleware(services.InitUsersServices()))
 
-	// r.Get("/", handlers.ExpensesList)
 	r.Post("/", handlers.CreateExpense(expenseService))
-	// r.Get("/:id", handlers.ExpensesRead)
-	// r.Put("/:id", handlers.ExpensesUpdate)
-	// r.Delete("/:id", handlers.ExpensesDelete)
+	r.Put("/:id", handlers.UpdateExpenses(expenseService))
+	r.Delete("/:id", handlers.DeleteExpenses(expenseService))
 }

@@ -23,6 +23,7 @@ func (ps *expenseServices) Create(expense *types.ExpenseDTO) (*types.ExpenseDTO,
 		Amount:    expense.Amount,
 		Category:  expense.Category,
 		CreatedAt: expense.CreatedAt,
+		UserID:    expense.UserID,
 	}
 
 	_, err := ps.expenseRepo.Create(newExpense)
@@ -48,28 +49,6 @@ func (ps *expenseServices) FindByID(id uuid.UUID) (*types.ExpenseDTO, error) {
 	return foundExpense, nil
 }
 
-func (ps *expenseServices) FindAll() ([]*types.ExpenseDTO, error) {
-	result, err := ps.expenseRepo.FindAll()
-	if err != nil {
-		return nil, err
-	}
-
-	foundExpensesList := []*types.ExpenseDTO{}
-
-	for _, expense := range result {
-		parse := &types.ExpenseDTO{
-			ID:        expense.ID,
-			Amount:    expense.Amount,
-			Category:  expense.Category,
-			CreatedAt: expense.CreatedAt,
-		}
-
-		foundExpensesList = append(foundExpensesList, parse)
-	}
-
-	return foundExpensesList, nil
-}
-
 func (ps *expenseServices) Update(expense *types.ExpenseDTO, updates interface{}) (*types.ExpenseDTO, error) {
 	err := ps.expenseRepo.Update(expense.ID, updates)
 	if err != nil {
@@ -86,7 +65,13 @@ func (ps *expenseServices) Update(expense *types.ExpenseDTO, updates interface{}
 		Amount:    result.Amount,
 		Category:  result.Category,
 		CreatedAt: result.CreatedAt,
+		UserID:    result.UserID,
 	}
 
 	return foundExpense, nil
+}
+
+func (ps *expenseServices) Delete(id uuid.UUID) error {
+	err := ps.expenseRepo.Delete(id)
+	return err
 }

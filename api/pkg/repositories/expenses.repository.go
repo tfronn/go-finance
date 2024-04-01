@@ -33,16 +33,12 @@ func (r *expenseRepository) FindByID(id uuid.UUID) (*models.Expense, error) {
 	return &expense, nil
 }
 
-func (r *expenseRepository) FindAll() ([]*models.Expense, error) {
-	var expenses []*models.Expense
-	err := r.db.Find(&expenses).Error
-	if err != nil {
-		return nil, err
-	}
-	return expenses, nil
+func (r *expenseRepository) Update(id uuid.UUID, updates interface{}) error {
+	result := r.db.Model(&models.Expense{}).Where("id = ?", id).Updates(updates)
+	return result.Error
 }
 
-func (r *expenseRepository) Update(id uuid.UUID, updates interface{}) error {
-	result := r.db.Where("id = ?", id).Updates(updates)
+func (r *expenseRepository) Delete(id uuid.UUID) error {
+	result := r.db.Where("id = ?", id).Delete(&models.Expense{})
 	return result.Error
 }

@@ -11,5 +11,5 @@ type Income struct {
 	Amount    float64   `gorm:"not null"`
 	Category  string
 	CreatedAt time.Time
-	UserID    uuid.UUID `gorm:"type:uuid;not null;index"`
+	UserID    uuid.UUID `gorm:"type:uuid;not null;index;foreignKey:UserID"`
 }

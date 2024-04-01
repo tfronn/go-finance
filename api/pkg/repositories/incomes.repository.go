@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"gofinance/api/pkg/interfaces"
 	"gofinance/api/pkg/models"
 
@@ -33,16 +34,13 @@ func (r *incomeRepository) FindByID(id uuid.UUID) (*models.Income, error) {
 	return &income, nil
 }
 
-func (r *incomeRepository) FindAll() ([]*models.Income, error) {
-	var incomes []*models.Income
-	err := r.db.Find(&incomes).Error
-	if err != nil {
-		return nil, err
-	}
-	return incomes, nil
+func (r *incomeRepository) Update(id uuid.UUID, updates interface{}) error {
+	result := r.db.Model(&models.Income{}).Where("id = ?", id).Updates(updates)
+	fmt.Println(result.Error, updates)
+	return result.Error
 }
 
-func (r *incomeRepository) Update(id uuid.UUID, updates interface{}) error {
-	result := r.db.Where("id = ?", id).Updates(updates)
+func (r *incomeRepository) Delete(id uuid.UUID) error {
+	result := r.db.Where("id = ?", id).Delete(&models.Income{})
 	return result.Error
 }

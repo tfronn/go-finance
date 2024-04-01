@@ -9,7 +9,6 @@ import (
 	"gofinance/utils"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 func CreateUser(userService interfaces.UserServices) fiber.Handler {
@@ -28,19 +27,28 @@ func CreateUser(userService interfaces.UserServices) fiber.Handler {
 	}
 }
 
-func GetUserByID(userService interfaces.UserServices) fiber.Handler {
+func GetUserInfoByToken(userService interfaces.UserServices) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		id, err := uuid.Parse(c.Params("id"))
-		if err != nil {
-			return err
+		authHeader := c.Get("Authorization")
+
+		if authHeader == "" {
+			return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
+				"statusCode": http.StatusUnauthorized,
+				"error":      "Missing authorization token",
+			})
 		}
 
-		user, err := userService.FindByID(id)
+		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+
+		userDTO, err := userService.FindByToken(tokenString)
 		if err != nil {
-			return err
+			return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
+				"statusCode": http.StatusUnauthorized,
+				"error":      err.Error(),
+			})
 		}
 
-		return c.JSON(user)
+		return c.JSON(userDTO)
 	}
 }
 
@@ -74,17 +82,6 @@ func GoogleLogin(userService interfaces.UserServices) fiber.Handler {
 			"token":  token,
 			"status": "success",
 		})
-	}
-}
-
-func GetUsers(userService interfaces.UserServices) fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		users, err := userService.FindAll()
-		if err != nil {
-			return err
-		}
-
-		return c.JSON(users)
 	}
 }
 
