@@ -7,9 +7,10 @@ import (
 )
 
 type Income struct {
-	ID        uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
-	Amount    float64   `gorm:"not null"`
-	Category  string
-	CreatedAt time.Time
-	UserID    uuid.UUID `gorm:"type:uuid;not null;index;foreignKey:UserID"`
+	ID          uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+	Description string    `gorm:"not null"`
+	Amount      float64   `gorm:"not null"`
+	Category    string    `gorm:"not null"`
+	CreatedAt   time.Time `gorm:"not null"`
+	UserID      uuid.UUID `gorm:"type:uuid;not null;index;foreignKey:UserID"`
 }

@@ -19,11 +19,12 @@ func NewIncomeService(repo interfaces.IncomeRepository) interfaces.IncomeService
 func (ps *incomeServices) Create(income *types.IncomeDTO) (*types.IncomeDTO, error) {
 
 	newIncome := &models.Income{
-		ID:        income.ID,
-		Amount:    income.Amount,
-		Category:  income.Category,
-		CreatedAt: income.CreatedAt,
-		UserID:    income.UserID,
+		ID:          income.ID,
+		Description: income.Description,
+		Amount:      income.Amount,
+		Category:    income.Category,
+		CreatedAt:   income.CreatedAt,
+		UserID:      income.UserID,
 	}
 
 	_, err := ps.incomeRepo.Create(newIncome)
@@ -41,16 +42,27 @@ func (ps *incomeServices) FindByID(id uuid.UUID) (*types.IncomeDTO, error) {
 	}
 
 	foundIncome := &types.IncomeDTO{
-		ID:        result.ID,
-		Amount:    result.Amount,
-		Category:  result.Category,
-		CreatedAt: result.CreatedAt,
+		ID:          result.ID,
+		Description: result.Description,
+		Amount:      result.Amount,
+		Category:    result.Category,
+		CreatedAt:   result.CreatedAt,
+		UserID:      result.UserID,
 	}
 	return foundIncome, nil
 }
 
-func (ps *incomeServices) Update(income *types.IncomeDTO, updates interface{}) (*types.IncomeDTO, error) {
-	err := ps.incomeRepo.Update(income.ID, updates)
+func (ps *incomeServices) Update(income *types.IncomeDTO, id uuid.UUID) (*types.IncomeDTO, error) {
+	incomeToUpdate := &models.Income{
+		ID:          income.ID,
+		Description: income.Description,
+		Amount:      income.Amount,
+		Category:    income.Category,
+		CreatedAt:   income.CreatedAt,
+		UserID:      income.UserID,
+	}
+
+	err := ps.incomeRepo.Update(incomeToUpdate)
 	if err != nil {
 		return income, err
 	}
@@ -61,11 +73,12 @@ func (ps *incomeServices) Update(income *types.IncomeDTO, updates interface{}) (
 	}
 
 	foundIncome := &types.IncomeDTO{
-		ID:        result.ID,
-		Amount:    result.Amount,
-		Category:  result.Category,
-		CreatedAt: result.CreatedAt,
-		UserID:    result.UserID,
+		ID:          result.ID,
+		Description: result.Description,
+		Amount:      result.Amount,
+		Category:    result.Category,
+		CreatedAt:   result.CreatedAt,
+		UserID:      result.UserID,
 	}
 
 	return foundIncome, nil

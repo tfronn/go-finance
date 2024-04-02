@@ -33,8 +33,8 @@ func (r *expenseRepository) FindByID(id uuid.UUID) (*models.Expense, error) {
 	return &expense, nil
 }
 
-func (r *expenseRepository) Update(id uuid.UUID, updates interface{}) error {
-	result := r.db.Model(&models.Expense{}).Where("id = ?", id).Updates(updates)
+func (r *expenseRepository) Update(expenseToUpdate *models.Expense) error {
+	result := r.db.Model(&models.Expense{}).Where("id = ?", expenseToUpdate.ID).Updates(expenseToUpdate)
 	return result.Error
 }
 

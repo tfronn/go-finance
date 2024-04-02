@@ -56,6 +56,16 @@ func UpdateExpenses(expensesService interfaces.ExpenseServices) fiber.Handler {
 			return fiber.NewError(fiber.ErrBadRequest.Code, fmt.Sprintf("error parsing body: %v", err))
 		}
 
+		expense, err := expensesService.FindByID(id)
+		if err != nil {
+			ctx.Status(http.StatusInternalServerError)
+			return ctx.JSON(err)
+		}
+
+		b.ID = expense.ID
+		b.CreatedAt = expense.CreatedAt
+		b.UserID = expense.UserID
+
 		updatedExpense, err := expensesService.Update(b, id)
 		if err != nil {
 			ctx.Status(http.StatusInternalServerError)

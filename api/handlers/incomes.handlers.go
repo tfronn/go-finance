@@ -55,6 +55,16 @@ func UpdateIncome(incomesService interfaces.IncomeServices) fiber.Handler {
 			return fiber.NewError(fiber.ErrBadRequest.Code, fmt.Sprintf("error parsing body: %v", err))
 		}
 
+		income, err := incomesService.FindByID(id)
+		if err != nil {
+			ctx.Status(http.StatusInternalServerError)
+			return ctx.JSON(err)
+		}
+
+		b.ID = income.ID
+		b.CreatedAt = income.CreatedAt
+		b.UserID = income.UserID
+
 		updatedIncome, err := incomesService.Update(b, id)
 		if err != nil {
 			ctx.Status(http.StatusInternalServerError)
@@ -64,7 +74,7 @@ func UpdateIncome(incomesService interfaces.IncomeServices) fiber.Handler {
 	}
 }
 
-func IncomesDelete(incomesService interfaces.IncomeServices) fiber.Handler {
+func DeleteIncome(incomesService interfaces.IncomeServices) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		id, err := uuid.Parse(ctx.Params("id"))
 		if err != nil {

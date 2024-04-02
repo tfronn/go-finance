@@ -13,5 +13,5 @@ func IncomesRoutes(app fiber.Router, incomeService interfaces.IncomeServices) {
 
 	r.Post("/", handlers.CreateIncome(incomeService))
 	r.Put("/:id", handlers.UpdateIncome(incomeService))
-	r.Delete("/:id", handlers.IncomesDelete(incomeService))
+	r.Delete("/:id", handlers.DeleteIncome(incomeService))
 }
