@@ -20,8 +20,13 @@ func NewUserService(repo interfaces.UserRepository) interfaces.UserServices {
 }
 
 func (us *userServices) Create(user *types.UserDTO) (*types.UserDTO, error) {
+	newID := user.ID
+	if newID == uuid.Nil {
+		newID = uuid.New()
+	}
+
 	newUser := &models.User{
-		ID:       user.ID,
+		ID:       newID,
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
@@ -45,22 +50,24 @@ func (us *userServices) FindByID(id uuid.UUID) (*types.UserDTO, error) {
 	expensesDTO := make([]*types.ExpenseDTO, len(result.Expenses))
 	for i, expense := range result.Expenses {
 		expensesDTO[i] = &types.ExpenseDTO{
-			ID:        expense.ID,
-			Amount:    expense.Amount,
-			CreatedAt: expense.CreatedAt,
-			Category:  expense.Category,
-			UserID:    expense.UserID,
+			ID:          expense.ID,
+			Amount:      expense.Amount,
+			CreatedAt:   expense.CreatedAt,
+			Description: expense.Description,
+			Category:    expense.Category,
+			UserID:      expense.UserID,
 		}
 	}
 
 	incomesDTO := make([]*types.IncomeDTO, len(result.Incomes))
 	for i, income := range result.Incomes {
 		incomesDTO[i] = &types.IncomeDTO{
-			ID:        income.ID,
-			Amount:    income.Amount,
-			CreatedAt: income.CreatedAt,
-			Category:  income.Category,
-			UserID:    income.UserID,
+			ID:          income.ID,
+			Amount:      income.Amount,
+			Description: income.Description,
+			CreatedAt:   income.CreatedAt,
+			Category:    income.Category,
+			UserID:      income.UserID,
 		}
 	}
 
@@ -124,22 +131,24 @@ func (us *userServices) FindByToken(tokenString string) (*types.UserDTO, error) 
 	expensesDTO := make([]*types.ExpenseDTO, len(result.Expenses))
 	for i, expense := range result.Expenses {
 		expensesDTO[i] = &types.ExpenseDTO{
-			ID:        expense.ID,
-			Amount:    expense.Amount,
-			CreatedAt: expense.CreatedAt,
-			Category:  expense.Category,
-			UserID:    expense.UserID,
+			ID:          expense.ID,
+			Amount:      expense.Amount,
+			CreatedAt:   expense.CreatedAt,
+			Description: expense.Description,
+			Category:    expense.Category,
+			UserID:      expense.UserID,
 		}
 	}
 
 	incomesDTO := make([]*types.IncomeDTO, len(result.Incomes))
 	for i, income := range result.Incomes {
 		incomesDTO[i] = &types.IncomeDTO{
-			ID:        income.ID,
-			Amount:    income.Amount,
-			CreatedAt: income.CreatedAt,
-			Category:  income.Category,
-			UserID:    income.UserID,
+			ID:          income.ID,
+			Amount:      income.Amount,
+			Description: income.Description,
+			CreatedAt:   income.CreatedAt,
+			Category:    income.Category,
+			UserID:      income.UserID,
 		}
 	}
 
@@ -167,22 +176,24 @@ func (us *userServices) FindByEmail(email string) (*types.UserDTO, error) {
 	expensesDTO := make([]*types.ExpenseDTO, len(result.Expenses))
 	for i, expense := range result.Expenses {
 		expensesDTO[i] = &types.ExpenseDTO{
-			ID:        expense.ID,
-			Amount:    expense.Amount,
-			CreatedAt: expense.CreatedAt,
-			Category:  expense.Category,
-			UserID:    expense.UserID,
+			ID:          expense.ID,
+			Amount:      expense.Amount,
+			CreatedAt:   expense.CreatedAt,
+			Description: expense.Description,
+			Category:    expense.Category,
+			UserID:      expense.UserID,
 		}
 	}
 
 	incomesDTO := make([]*types.IncomeDTO, len(result.Incomes))
 	for i, income := range result.Incomes {
 		incomesDTO[i] = &types.IncomeDTO{
-			ID:        income.ID,
-			Amount:    income.Amount,
-			CreatedAt: income.CreatedAt,
-			Category:  income.Category,
-			UserID:    income.UserID,
+			ID:          income.ID,
+			Amount:      income.Amount,
+			Description: income.Description,
+			CreatedAt:   income.CreatedAt,
+			Category:    income.Category,
+			UserID:      income.UserID,
 		}
 	}
 
@@ -209,22 +220,24 @@ func (us *userServices) FindByGoogleID(googleID string) (*types.UserDTO, error) 
 	expensesDTO := make([]*types.ExpenseDTO, len(result.Expenses))
 	for i, expense := range result.Expenses {
 		expensesDTO[i] = &types.ExpenseDTO{
-			ID:        expense.ID,
-			Amount:    expense.Amount,
-			CreatedAt: expense.CreatedAt,
-			Category:  expense.Category,
-			UserID:    expense.UserID,
+			ID:          expense.ID,
+			Amount:      expense.Amount,
+			CreatedAt:   expense.CreatedAt,
+			Description: expense.Description,
+			Category:    expense.Category,
+			UserID:      expense.UserID,
 		}
 	}
 
 	incomesDTO := make([]*types.IncomeDTO, len(result.Incomes))
 	for i, income := range result.Incomes {
 		incomesDTO[i] = &types.IncomeDTO{
-			ID:        income.ID,
-			Amount:    income.Amount,
-			CreatedAt: income.CreatedAt,
-			Category:  income.Category,
-			UserID:    income.UserID,
+			ID:          income.ID,
+			Amount:      income.Amount,
+			Description: income.Description,
+			CreatedAt:   income.CreatedAt,
+			Category:    income.Category,
+			UserID:      income.UserID,
 		}
 	}
 
@@ -256,22 +269,24 @@ func (us *userServices) Update(user *types.UserDTO, updates interface{}) (*types
 	expensesDTO := make([]*types.ExpenseDTO, len(result.Expenses))
 	for i, expense := range result.Expenses {
 		expensesDTO[i] = &types.ExpenseDTO{
-			ID:        expense.ID,
-			Amount:    expense.Amount,
-			CreatedAt: expense.CreatedAt,
-			Category:  expense.Category,
-			UserID:    expense.UserID,
+			ID:          expense.ID,
+			Amount:      expense.Amount,
+			CreatedAt:   expense.CreatedAt,
+			Description: expense.Description,
+			Category:    expense.Category,
+			UserID:      expense.UserID,
 		}
 	}
 
 	incomesDTO := make([]*types.IncomeDTO, len(result.Incomes))
 	for i, income := range result.Incomes {
 		incomesDTO[i] = &types.IncomeDTO{
-			ID:        income.ID,
-			Amount:    income.Amount,
-			CreatedAt: income.CreatedAt,
-			Category:  income.Category,
-			UserID:    income.UserID,
+			ID:          income.ID,
+			Amount:      income.Amount,
+			Description: income.Description,
+			CreatedAt:   income.CreatedAt,
+			Category:    income.Category,
+			UserID:      income.UserID,
 		}
 	}
 

@@ -8,7 +8,7 @@ import (
 var (
 	APPVERSION = getEnv("APPVERSION", "v0.1.0")
 	// DB returns the name of the sqlite database
-	DB = getEnv("DB", "host=192.168.0.6 user=gofinance password=gofinance dbname=gofinance port=5432 sslmode=disable TimeZone=America/Sao_Paulo")
+	DB = getEnv("DB", "host=192.168.48.1 user=gofinance password=gofinance dbname=gofinance port=5432 sslmode=disable TimeZone=America/Sao_Paulo")
 	// PORT returns the server listening port
 	PORT = getEnv("PORT", "4000")
 	// TOKENKEY returns the jwt token secret

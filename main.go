@@ -24,7 +24,7 @@ func main() {
 	app := fiber.New(fiber.Config{
 		ErrorHandler: utils.ErrorHandler,
 	})
-	app.Use(cors.New())
+	app.Use(cors.New(cors.ConfigDefault))
 	app.Get("/health", func(c *fiber.Ctx) error {
 		return c.JSON("Everything sounds good...")
 	})

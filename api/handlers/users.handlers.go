@@ -23,7 +23,18 @@ func CreateUser(userService interfaces.UserServices) fiber.Handler {
 			return err
 		}
 
-		return c.JSON(user)
+		generatedToken, err := utils.GenerateToken(user)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Failed to generate token")
+		}
+
+		user.Password = ""
+
+		return c.JSON(fiber.Map{
+			"user":   user,
+			"token":  generatedToken,
+			"status": "success",
+		})
 	}
 }
 
@@ -47,6 +58,8 @@ func GetUserInfoByToken(userService interfaces.UserServices) fiber.Handler {
 				"error":      err.Error(),
 			})
 		}
+
+		userDTO.Password = ""
 
 		return c.JSON(userDTO)
 	}
@@ -76,6 +89,8 @@ func GoogleLogin(userService interfaces.UserServices) fiber.Handler {
 		if err != nil {
 			return err
 		}
+
+		userDTO.Password = ""
 
 		return c.JSON(map[string]interface{}{
 			"user":   userDTO,
@@ -108,6 +123,46 @@ func TokenVerificationMiddleware(userService interfaces.UserServices) fiber.Hand
 
 		c.Context().SetUserValue("user", userDTO)
 
+		userDTO.Password = ""
+
 		return c.Next()
+	}
+}
+
+func LoginByEmailAndPassword(userService interfaces.UserServices) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		loginDTO := &types.LoginDTO{}
+
+		if err := c.BodyParser(loginDTO); err != nil {
+			return err
+		}
+
+		user, err := userService.FindByEmail(loginDTO.Email)
+		if err != nil {
+			return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
+				"statusCode": http.StatusUnauthorized,
+				"error":      "Invalid email or password",
+			})
+		}
+
+		if user.Password == loginDTO.Password {
+			generatedToken, err := utils.GenerateToken(user)
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).SendString("Failed to generate token")
+			}
+
+			user.Password = ""
+
+			return c.JSON(fiber.Map{
+				"user":   user,
+				"token":  generatedToken,
+				"status": "success",
+			})
+		}
+
+		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
+			"statusCode": http.StatusUnauthorized,
+			"error":      "Invalid email or password",
+		})
 	}
 }
